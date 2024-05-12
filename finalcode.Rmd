@@ -1,0 +1,103 @@
+---
+title: 'Machine Learning - Final Project'
+author: "Benjamin Mauldin"
+date: "`r format(Sys.Date(),'%B %e, %Y')`"
+output: html_document
+---
+```{r}
+# STEP 1: PREPROCESSING
+
+# LOAD RELEVANT PACKAGES
+library(ggplot2)
+library(dplyr)
+library(tidyverse)
+
+# DATA IMPORT
+train <- read_csv("student_exam_data.csv") #load/import files
+test <- read_csv("student_exam_data_new.csv")
+
+
+# DATA EXPLORATION
+str(train)
+summary(train)
+train$`Pass/Fail` <- factor(train$`Pass/Fail`) # factorizing pass/fail column
+test$`Pass/Fail` <- factor(test$`Pass/Fail`) # applying the same to the test data
+
+ggplot(train, aes(x = `Pass/Fail`)) +  # plot counting # of passes and fails
+  geom_bar() + 
+  geom_text(stat = "count", aes(label = ..count..), vjust = -0.5)
+```
+
+
+```{r}
+# FIRST MODEL LINEAR REGRESSION
+# LOADING ANY NECESSARY LIBRARIES
+library(caret)
+library(vip)
+
+# BUILDING LINEAR MODEL
+model_glm <- glm(`Pass/Fail` ~ `Study Hours` + `Previous Exam Score`, data = train, family = "binomial")
+
+# PREDICTING ON TEST DATA
+predictions_glm <- predict(model_glm, newdata = test, type = "response")
+predicted_class <- ifelse(predictions_glm >= 0.5, 1, 0)
+
+# FETCHING METRICS AND CONFUSION MATRIX
+conf_matrix_glm <- confusionMatrix(as.factor(predicted_class), as.factor(test$`Pass/Fail`))
+accuracy_glm <- conf_matrix_glm$overall["Accuracy"]
+precision_glm <- conf_matrix_glm$byClass["Precision"]
+recall_glm <- conf_matrix_glm$byClass["Recall"]
+f1_score_glm <- conf_matrix_glm$byClass["F1"]
+
+# PRINT METRICS
+print(conf_matrix_glm)
+cat("Accuracy:", accuracy_glm, "\n")
+cat("Precision:", precision_glm, "\n")
+cat("Recall:", recall_glm, "\n")
+cat("F1-score:", f1_score_glm, "\n")
+
+# PLOT OF FEATURE IMPORTANCE
+vip(model_glm)
+
+```
+
+
+```{r}
+# SECOND MODEL RANDOM FOREST
+# LOADING ANY NECESSARY LIBRARIES
+library(randomForest)
+library(caret)
+library(vip)
+
+# Split data into predictors (features) and outcome variable
+predictors <- train[, 1:2]  # Using the first 4 columns as predictors
+outcome <- train$`Pass/Fail`
+
+# Train random forest model
+model_rf <- randomForest(x = predictors, y = outcome, ntree = 100)
+
+# Make predictions
+predictions_rf <- predict(model_rf, newdata = train, type = "response")
+
+# Evaluate model
+conf_matrix_rf <- confusionMatrix(predictions_rf, test$`Pass/Fail`)
+accuracy_rf <- conf_matrix_rf$overall["Accuracy"]
+precision_rf <- conf_matrix_rf$byClass["Precision"]
+recall_rf <- conf_matrix_rf$byClass["Recall"]
+f1_score_rf <- conf_matrix_rf$byClass["F1"]
+
+# Print summary metrics
+print(conf_matrix_rf)
+cat("Accuracy:", accuracy_rf, "\n")
+cat("Precision:", precision_rf, "\n")
+cat("Recall:", recall_rf, "\n")
+cat("F1-score:", f1_score_rf, "\n")
+
+# Print Feature Importance
+vip(model_rf)
+
+```
+
+
+
+
