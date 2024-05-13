@@ -1,0 +1,55 @@
+Slide 2
+All of us remember the physical isolation of covid, the masks, the social distancing - but those of us who were still in school may have felt it more.
+In the face of the pandemic, some 77% of US public schools and 73% of US private schools reported moving some or all of their classes to 
+distance learning formats in 2020, according to statistics by the NCES. 
+This is a MAJORITY of children who have spent some of their formative years in the online classroom, perhaps struggling with the technology or missing their friends, or both.
+Although COVID is over, its apparent the online classroom is here to stay.
+
+
+Slide 3
+Even in the wake of the pandemic, many students have remained remote. These tables from Phil Hill show postsecondary enrollment by learning type: 
+as you can see, a combined 54.3% of college students have at least some portion of their learning as remote, outnumbering those who learn fully in-person by 8.6%.
+With so much of the world's learning remaining online, we require the tools necessary to bolster this distanced learning, 
+and this is the problem learning analytics seeks to solve.
+
+
+Slide 4
+Learning analytics is the application of statistical and machine learning techniques on data gathered in online classrooms to find useful insights. 
+Learning analytics can help us shore up some of the weaknesses of online learning, namely the difficulty in gauging engagement and performance from afar.
+We could personalize education by calculating overall progress of a student in a course or unit, 
+focus areas for difficult sections, 
+learning styles of a student, 
+teaching styles of a teacher,
+or even estimations of time needed for remaining assignments, tailored for each student. 
+Institutions could even use these analytics to better allocate resources across departments.
+
+
+Slide 5
+Other examples of analytics regard predicting student performance. 
+This can be used to better identify students who may be struggling in certain areas, and allowing faculty to intervene and help before its too late. 
+This sort of predictive analytics is where this project is focused. Student performance was predicted by analyzing their study hours and previous exam performances
+and the results were quite good.
+
+
+Slide 6
+One training dataset and one testing dataset were provided by Kaggle and imported into R. These are provided in the repository. 
+As is visible in the code excerpt, checking the structure of the datasets shows two continuous variables, study hours and previous exam score,
+and our binary response variable, Pass/Fail. 
+After factorizing the response variable, a count-plot was made showing the number of passing students to be 184, and failing students to be 316.
+
+
+Slide 7
+Afterwards, logistic regression was applied to the training data, using Pass/Fail as our response, and our other two variables as predictors.
+This model was then used to predict pass/fail rates on the test data, and compared to the actual pass/fail rates in a confusion matrix.
+This confusion matrix outputs several different performance metrics, the foremost of which is accuracy, which turns out to be 86.8%.
+Considering our data is balanced, this by itself is a good metric, but our confusion matrix also outputs a precision of 89.3%, a recall of 89.9%, and an F1-Score of 89.6%.
+A feature importance plot was also generated, showing that study hours were slightly more important than previous exam performance in this model.
+
+
+Slide 8
+Our second and final method is the random forest. This is an ensemble method combining the output of multiple decision trees - in our case 100.
+Similarly to our first method, the random forest was trained on our training data, then formed predictions on the test data.
+These predictions were then compared to the actual, and the same metrics were outputted.
+In the case of the random forest, all of our metrics turned out to be 100 percent accurate.
+Again, our feature importance plot shows study hours to be more important than previous exam performance, but in this case, more significantly.
+
